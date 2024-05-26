@@ -1,10 +1,17 @@
 # This content is only used by buf's cli and the buf_lint_test in Bazel.
-# It it NOT used to determine Bazel's generation of code and output directories.
-version: v1
+# It is NOT used to determine Bazel's generation of code and output directories.
+version: v2
+managed:
+  enabled: true
+  # override:
+  #   - file_option: go_package_prefix
+  #     value: internal/gen # github.com/abitofhelp/bufstarter/proto/helloworld/v1
 plugins:
-  - plugin: go
-    out: gen
+  - remote: buf.build/protocolbuffers/go
+    out: gen/
     opt: paths=source_relative
-  - plugin: connect-go
-    out: gen
+  - remote: buf.build/connectrpc/go
+    out: gen/
     opt: paths=source_relative
+#inputs:
+#  - directory: proto
