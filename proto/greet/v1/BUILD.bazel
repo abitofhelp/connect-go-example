@@ -9,7 +9,8 @@ go_proto_compiler(
     name = "connect_go_proto_compiler",
     options = [
         "lang=go",
-        "paths=source_relative"
+        "connect-go_out=gen/",
+        "connect-go_opt=paths=source_relative",
     ],
     plugin = "@com_connectrpc_connect//cmd/protoc-gen-connect-go:protoc-gen-connect-go",
     suffix = ".connect.go",
@@ -19,35 +20,37 @@ go_proto_compiler(
 )
 
 proto_library(
-    name = "greet_proto",
+    name = "greetv1_proto",
     srcs = ["greet.proto"],
     visibility = ["//visibility:public"],
 )
 
 buf_lint_test(
-   name = "greet_proto_lint",
-   config = "//:buf.yaml",
-   targets = [":greet_proto"],
-   visibility = ["//visibility:public"],
+    name = "greet_proto_lint",
+    config = "//:buf.yaml",
+    targets = [":greetv1_proto"],
+    visibility = ["//visibility:public"],
 )
 
 # Generate the greet.pb.go file.
 go_proto_library(
     name = "greetv1_go_proto",
-    compilers = ["@rules_go//proto:go_proto"],
+    compilers = [
+        "@rules_go//proto:go_proto"
+    ],
     importpath = "github.com/abitofhelp/connect-go-example/gen/greet/v1",
-    #proto = ":greet_proto",
-    deps = [":greet_proto"],
+    proto = ":greetv1_proto",
     visibility = ["//visibility:public"],
 )
 
 # Generate the greet.connect.pb.go file, which imports greet.pb.go.
 go_proto_library(
     name = "greetv1_connect_go_proto",
-    compilers = [":connect_go_proto_compiler"],
+    compilers = [
+        ":connect_go_proto_compiler",
+    ],
     importpath = "github.com/abitofhelp/connect-go-example/gen/greet/v1/greetv1connect",
-    #proto = ":greet_proto",
-    deps = [":greet_proto"],
+    proto = ":greetv1_proto",
     visibility = ["//visibility:public"],
     deps = [":greetv1_go_proto"],
 )

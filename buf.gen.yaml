@@ -3,9 +3,6 @@
 version: v2
 managed:
   enabled: true
-  # override:
-  #   - file_option: go_package_prefix
-  #     value: internal/gen # github.com/abitofhelp/bufstarter/proto/helloworld/v1
 plugins:
   - remote: buf.build/protocolbuffers/go
     out: gen/
@@ -13,5 +10,3 @@ plugins:
   - remote: buf.build/connectrpc/go
     out: gen/
     opt: paths=source_relative
-#inputs:
-#  - directory: proto
