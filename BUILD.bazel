@@ -1,5 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
 load("@buildifier_prebuilt//:rules.bzl", "buildifier")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
 exports_files(
     ["buf.yaml"],
@@ -11,18 +12,15 @@ gazelle_binary(
     languages = [
         # Loads the native proto extension
         "@bazel_gazelle//language/proto:go_default_library",
+        "@bazel_gazelle//language/go:go_default_library",
         # Loads the Buf extension
         "@rules_buf//gazelle/buf:buf",
         # NOTE: This needs to be loaded after the proto language
     ],
 )
 
-# gazelle:exclude bazel-*
-# gazelle:exclude gen
+# gazelle:prefix github.com/abitofhelp/connect-go-example
 # gazelle:exclude scripts
-# gazelle:go_grpc_compilers @com_connectrpc_connect//cmd/protoc-gen-connect-go:protoc-gen-connect-go
-# gazelle:go_naming_convention import_alias
-# gazelle:go_proto_compilers @rules_go//proto:go_proto
 gazelle(
     name = "gazelle",
     gazelle = ":gazelle-buf",
@@ -39,4 +37,18 @@ buildifier(
     lint_warnings = ["all"],
     mode = "check",
     verbose = True,
+)
+
+go_binary(
+    name = "main",
+    embed = [":connect-go-example_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "connect-go-example_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/abitofhelp/connect-go-example",
+    visibility = ["//visibility:private"],
+    deps = ["//proto/greet/v1:greetv1_go_proto", "//proto/greet/v1:greetv1_connect_go_proto"],
 )
