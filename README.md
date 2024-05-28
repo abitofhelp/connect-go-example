@@ -5,6 +5,8 @@ This repository contains a client/server solution implementing the classic  Gree
 * Buf
 * ConnectRPC
 * Go
+* Grpc Health
+* Grpc Reflection
 * Protocol Buffers
 
 ## File Generation
