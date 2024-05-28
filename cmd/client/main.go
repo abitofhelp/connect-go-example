@@ -14,7 +14,7 @@ func main() {
 	client := greetv1connect.NewGreetServiceClient(
 		http.DefaultClient,
 		"http://localhost:8080",
-		connect.WithGRPC(), // To use gRPC rather than Connect
+		//connect.WithGRPC(), // To use gRPC rather than Connect
 	)
 	res, err := client.Greet(
 		context.Background(),
