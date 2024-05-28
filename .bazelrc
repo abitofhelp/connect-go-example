@@ -1,0 +1,41 @@
+## https://docs.aspect.build/guides/bazelrc/
+## https://github.com/aspect-build/bazel-lib/tree/main/.aspect/bazelrc
+
+# Workaround for cpp header file conflict on macos.
+# see: https://github.com/bazelbuild/bazel/issues/8053
+build --sandbox_block_path=/usr/local
+
+build --color=yes --verbose_failures --stamp --workspace_status_command=./scripts/status.sh --cxxopt=-std=c++14 --host_cxxopt=-std=c++14 ###--@rules_rust//rust/toolchain/channel=nightly
+common  --announce_rc --show_timestamps --enable_bzlmod
+query #--output=label_kind
+test --color=yes --test_verbose_timeout_warnings --test_output=errors
+test:stress --runs_per_test=10 --notest_keep_going
+#try-import ".bazelrc.local" --test_output=errors
+
+###############################
+# Directory structure         #
+###############################
+# Artifacts are typically placed in a directory called "dist"
+# Be aware that this setup will still create a bazel-out symlink in
+# your project directory, which you must exclude from version control and your
+# editor's search path.
+#build --symlink_prefix=dist/
+
+###############################
+# Optimizations               #
+###############################
+# Speed up all builds by not checking if external repository files have been modified.
+# Docs: https://github.com/bazelbuild/bazel/blob/1af61b21df99edc2fc66939cdf14449c2661f873/src/main/java/com/google/devtools/build/lib/bazel/repository/RepositoryOptions.java#L244
+build --noexperimental_check_external_repository_files
+fetch --noexperimental_check_external_repository_files
+query --noexperimental_check_external_repository_files
+
+# Directories used by sandboxed non-worker execution may be reused to avoid unnecessary setup costs.
+# Save time on Sandbox creation and deletion when many of the same kind of action run during the
+# build.
+# Docs: https://bazel.build/reference/command-line-reference#flag--reuse_sandbox_directories
+build --reuse_sandbox_directories
+
+# Avoid this flag being enabled by remote_download_minimal or remote_download_toplevel
+# See https://meroton.com/blog/bazel-6-errors-build-without-the-bytes/
+build --noexperimental_action_cache_store_output_metadata

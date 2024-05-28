@@ -1,0 +1,23 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "server_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/abitofhelp/connect-go-example/cmd/server",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_connectrpc_grpchealth//:go_default_library",
+        "@com_connectrpc_grpcreflect//:go_default_library",
+        "@com_connectrpc_connect//:go_default_library",
+        "//proto/greet/v1:greetv1_connect_go_proto",
+        "//proto/greet/v1:greetv1_go_proto",
+        "@org_golang_x_net//http2:go_default_library",
+        "@org_golang_x_net//http2/h2c:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "server",
+    embed = [":server_lib"],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,12 @@
+# This file is only used by buf's cli and the buf_lint_test in Bazel.
+# It is NOT used to configure Bazel's generation of files, which is done in proto/greet/v1/BUILD.bazel.
+version: v2
+managed:
+  enabled: true
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: gen/
+    opt: paths=source_relative
+  - remote: buf.build/connectrpc/go
+    out: gen/
+    opt: paths=source_relative
