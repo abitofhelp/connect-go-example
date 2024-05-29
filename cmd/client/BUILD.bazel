@@ -6,9 +6,9 @@ go_library(
     importpath = "github.com/abitofhelp/connect-go-example/cmd/client",
     visibility = ["//visibility:private"],
     deps = [
-        "@com_connectrpc_connect//:go_default_library",
-        "//proto/greet/v1:greetv1_connect_go_proto",
         "//proto/greet/v1:greetv1_go_proto",
+        "//proto/greet/v1/greetv1connect:go_default_library",
+        "@com_connectrpc_connect//:go_default_library",
     ],
 )
 

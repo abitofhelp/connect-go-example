@@ -1,0 +1,32 @@
+load("@rules_buf//buf:defs.bzl", "buf_lint_test")
+load("@rules_go//proto:compiler.bzl", "go_proto_compiler")
+load("@rules_go//proto:def.bzl", "go_proto_library")
+
+## bazel query --output label '@com_connectrpc_connect//...'
+## @com_connectrpc_connect//cmd/protoc-gen-connect-go:protoc-gen-connect-go
+go_proto_compiler(
+    name = "connect_go_proto_compiler",
+    plugin = "@com_connectrpc_connect//cmd/protoc-gen-connect-go:protoc-gen-connect-go",
+    suffix = ".connect.go",
+    visibility = ["//visibility:public"],
+    deps = ["@com_connectrpc_connect//:go_default_library"],
+)
+
+# Generate the greet.connect.pb.go file, which imports greet.pb.go.
+go_proto_library(
+    name = "greetv1connect_connect_go_proto",
+    compilers = [
+        ":connect_go_proto_compiler",
+    ],
+    importpath = "github.com/abitofhelp/connect-go-example/gen/greet/v1",
+    overrideimportpath = "github.com/abitofhelp/connect-go-example/gen/greet/v1/greetv1connect",
+    proto = "//proto/greet/v1:greetv1_proto",
+    visibility = ["//visibility:public"],
+    deps = ["//proto/greet/v1:go_default_library"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":greetv1connect_connect_go_proto",
+    visibility = ["//visibility:public"],
+)
